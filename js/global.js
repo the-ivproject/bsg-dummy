@@ -2,9 +2,10 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiaXZwcm9qZWN0IiwiYSI6ImNrcDZuMjZvajAzZDAyd3Bib
 
 const map = new mapboxgl.Map({
     container: 'map', // container ID
-    // projection: 'winkelTripel',
+    projection: 'winkelTripel',
     style: 'mapbox://styles/ivproject/ckxneoss2ol4114jmeav4mapm', // style URL
-    zoom: 1.5 // starting zoom
+    zoom: 2,
+    minZoom: 1.5 // starting zoom
 });
 
 map.addControl(new mapboxgl.NavigationControl());
@@ -12,156 +13,156 @@ map.addControl(new mapboxgl.NavigationControl());
 const geojson_url = 'geojson/country_data.geojson'
 
 map.on('load', () => {
-let raw_geojson = $.ajax({
-    type: "GET",
-    url: geojson_url,
-    dataType: "json",
-    success: function (csvData) {
-        console.log('ok')
-    }
-}).done(result => {
-
-    let filterCollection = {
-        type: "FeatureCollection",
-    }
-
-    map.addSource('base-country', {
-        type: 'geojson',
-        data: result
-    })
-
-    map.addSource('bsg-country', {
-        type: 'geojson',
-        data: {}
-    })
-
-    let btn = document.querySelectorAll('#filter-bsg input')
-
-    let detail_info = document.querySelectorAll('.detail-info')
-    detail_info.forEach(i => {
-        i.style.display = 'none'
-    })
-
-    let buttonClicked = null;
-    let loading_text = document.getElementById('loading-text')
-
-    
-    let hoveredStateId = null;
-
-    btn.forEach(async (b, i) => {
-        b.style.color = "black";
-        b.style.background = "#fff";
-        b.onclick = async () => {
-            loading_text.style.display = 'none'
-            if (buttonClicked !== null) {
-                buttonClicked.style.color = "black";
-                buttonClicked.style.background = "#fff";
-            }
-
-            let data = result.features.filter(a => {
-                return a.properties['BSG'] == b.value.toUpperCase()
-            })
-
-            detail_info.forEach(i => {
-                i.style.display = 'none'
-            })
-
-            let id_info = document.getElementById(`${b.value}-info`)
-            id_info.style.display = 'block'
-
-            filterCollection['features'] = data
-            map.getSource('bsg-country').setData(filterCollection)
-
-            let bbox = turf.extent(filterCollection);
-            map.fitBounds(bbox, {
-                padding: 50
-            });
-
-            buttonClicked = b;
-            buttonClicked.style.color = "white";
-            buttonClicked.style.background = "#763d8e";
-
-            let pop = document.getElementsByClassName('mapboxgl-popup')
-            pop[0].style.display = 'none'
+    let raw_geojson = $.ajax({
+        type: "GET",
+        url: geojson_url,
+        dataType: "json",
+        success: function (csvData) {
+            console.log('ok')
         }
-    })
+    }).done(result => {
 
-    let coordinates = ''
+        let filterCollection = {
+            type: "FeatureCollection",
+        }
 
-    const graticule = {
-        type: 'FeatureCollection',
-        features: []
-    };
+        map.addSource('base-country', {
+            type: 'geojson',
+            data: result
+        })
 
-    for (let lng = -170; lng <= 180; lng += 40) {
-        graticule.features.push({
-            type: 'Feature',
-            geometry: {
-                type: 'LineString',
-                coordinates: [
-                    [lng, -90],
-                    [lng, 90]
-                ]
-            },
-            properties: {
-                value: lng
+        map.addSource('bsg-country', {
+            type: 'geojson',
+            data: {}
+        })
+
+        let btn = document.querySelectorAll('#filter-bsg input')
+
+        let detail_info = document.querySelectorAll('.detail-info')
+        detail_info.forEach(i => {
+            i.style.display = 'none'
+        })
+
+        let buttonClicked = null;
+        let loading_text = document.getElementById('loading-text')
+
+
+        let hoveredStateId = null;
+
+        btn.forEach(async (b, i) => {
+            b.style.color = "black";
+            b.style.background = "#fff";
+            b.onclick = async () => {
+                loading_text.style.display = 'none'
+                if (buttonClicked !== null) {
+                    buttonClicked.style.color = "black";
+                    buttonClicked.style.background = "#fff";
+                }
+
+                let data = result.features.filter(a => {
+                    return a.properties['BSG'] == b.value.toUpperCase()
+                })
+
+                detail_info.forEach(i => {
+                    i.style.display = 'none'
+                })
+
+                let id_info = document.getElementById(`${b.value}-info`)
+                id_info.style.display = 'block'
+
+                filterCollection['features'] = data
+                map.getSource('bsg-country').setData(filterCollection)
+
+                let bbox = turf.extent(filterCollection);
+                map.fitBounds(bbox, {
+                    padding: 50
+                });
+
+                buttonClicked = b;
+                buttonClicked.style.color = "white";
+                buttonClicked.style.background = "#763d8e";
+
+                let pop = document.getElementsByClassName('mapboxgl-popup')
+                pop[0].style.display = 'none'
             }
-        });
-    }
-    for (let lat = -80; lat <= 80; lat += 40) {
-        graticule.features.push({
-            type: 'Feature',
-            geometry: {
-                type: 'LineString',
-                coordinates: [
-                    [-180, lat],
-                    [180, lat]
-                ]
-            },
-            properties: {
-                value: lat
-            }
-        });
-    }
+        })
+
+        let coordinates = ''
+
+        const graticule = {
+            type: 'FeatureCollection',
+            features: []
+        };
+
+        for (let lng = -170; lng <= 180; lng += 40) {
+            graticule.features.push({
+                type: 'Feature',
+                geometry: {
+                    type: 'LineString',
+                    coordinates: [
+                        [lng, -90],
+                        [lng, 90]
+                    ]
+                },
+                properties: {
+                    value: lng
+                }
+            });
+        }
+        for (let lat = -80; lat <= 80; lat += 40) {
+            graticule.features.push({
+                type: 'Feature',
+                geometry: {
+                    type: 'LineString',
+                    coordinates: [
+                        [-180, lat],
+                        [180, lat]
+                    ]
+                },
+                properties: {
+                    value: lat
+                }
+            });
+        }
 
 
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                coordinates = [position.coords.latitude, position.coords.longitude];
-    
-                let url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates.reverse().join(",")}.json?access_token=pk.eyJ1IjoiaXZwcm9qZWN0IiwiYSI6ImNrcDZuMjZvajAzZDAyd3BibDJvNmJ4bjMifQ.5FpaSBhuOWEDm3m8PQp3Zg`
+        // if (navigator.geolocation) {
+            // navigator.geolocation.getCurrentPosition(function (position) {
+            //     coordinates = [position.coords.latitude, position.coords.longitude];
+
+                let url = `https://api.mapbox.com/geocoding/v5/mapbox.places/nigeria.json?access_token=pk.eyJ1IjoiaXZwcm9qZWN0IiwiYSI6ImNrcDZuMjZvajAzZDAyd3BibDJvNmJ4bjMifQ.5FpaSBhuOWEDm3m8PQp3Zg`
                 $.get(url, (data) => {
-    
+
                     loading_text.style.display = 'none'
                     let countryOnly = data.features.filter(f => {
                         return f.place_type == 'country'
                     })
-    
+
                     let countryId = countryOnly[0].properties.short_code
                     let filterRawGeojson = result.features.filter(f => {
                         return f.properties['CNTR_ID'] == countryId.toUpperCase()
                     })
-    
+
                     filterCollection['features'] = filterRawGeojson
                     map.getSource('bsg-country').setData(filterCollection)
-    
+
                     let currentProp = filterRawGeojson[0].properties['BSG']
-    
+
                     btn.forEach(async b => {
                         if (buttonClicked !== null) {
-    
+
                             buttonClicked.style.color = "white";
                             buttonClicked.style.background = "#763d8e";
                         }
-    
+
                         if (b.value.toLowerCase() === currentProp.toLowerCase()) {
                             buttonClicked = b;
                             buttonClicked.style.color = "black";
                             buttonClicked.style.background = "#fff";
                             let id_info = document.getElementById(`${b.value.toLowerCase()}-info`)
                             id_info.style.display = 'block'
-    
+
                             let bbox = turf.extent(filterCollection);
                             map.fitBounds(bbox, {
                                 padding: 150
@@ -169,9 +170,9 @@ let raw_geojson = $.ajax({
                         }
                     })
                 })
-            });
-        }
-    
+            // });
+        // }
+
         map.addLayer({
             'id': 'bsg-country',
             'type': 'fill',
@@ -275,12 +276,26 @@ let raw_geojson = $.ajax({
                 .setLngLat(e.lngLat)
                 .setHTML(e.features[0].properties['NAME_ENGL'])
                 .addTo(map);
-
-
         });
-   
+    })
+
+    let lastZoom = map.getZoom();
+
+    map.on('zoom', () => {
+        const currentZoom = map.getZoom();
+        if (currentZoom > lastZoom) {
+            // zoom in
+            map.setProjection('mercator')
+        } else {
+            // zoom out
+            map.setProjection('winkelTripel')
+            // map.dragging.disable();
+        }
+
+        lastZoom = currentZoom;
+    });
 })
-})
+
 function collapse() {
     let collapsible = document.querySelectorAll('.des')
     let bsg_world = document.getElementById('bsg-world')
@@ -298,4 +313,3 @@ function collapse() {
     })
 
 }
-
