@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Display a map on a webpage</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+
+    <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+    <div class="feature-placement">
+        <div class="feature">
+            <div id="filter-bsg">
+                <input type="button" value="shift" style="display: block;">
+                <input type="button" value="grow" style="display: block;">
+                <input type="button" value="build" style="display: block;">
+            </div>
+        </div>
+        <!-- <div class="btn-z">
+            <button type="button" class="mapboxgl-ctrl-zoom-in" aria-label="Zoom in" aria-disabled="false"> - </button>
+            <button onclick> + </button>
+        </div> -->
+    </div>
+
+    <div class="card-placement">
+        <div class="card-info dark">
+
+            <h2 id="loading-text" style="margin: 0;">No Data</h2>
+
+            <div id="build-info" class="detail-info">
+                <h3 class="bsg-title">What is a ‘Build’ nation? <i class="fas fa-chevron-up" onclick="collapse()"></i></h3>
+                <p class="des">‘Build’ nations are characterised by an overall modest per capita material footprint when compared
+                    with the ‘Grow’ and ‘Shift’ nations. Biomass extraction is the dominant resource group. Due to a
+                    largely informal waste sector, material cycling is low but assumed to be underreported.</p>
+            </div>
+            <div id="shift-info" class="detail-info">
+                <h3 class="bsg-title">What is a ‘Shift’ nation? <i class="fas fa-chevron-up" onclick="collapse()"></i></h3>
+                <p class="des">The ‘Shift’ nations show high imports of
+                    finished products with a high resource
+                    footprint elsewhere. Shift nations effectively
+                    outsource resource intensive production.
+                    Their extraction of fossil fuels is relatively
+                    high.</p>
+            </div>
+            <div id="grow-info" class="detail-info">
+                <h3 class="bsg-title">What is a ‘Grow’ nation? <i class="fas fa-chevron-up" onclick="collapse()"></i></h3>
+                <p class="des"> ‘Grow’ countries are manufacturing hubs,
+                    hosting an expanding industrial sector and
+                    leading the way when it comes to building.
+                    They extract and import a large array of
+                    resources which are then processed and flow
+                    into manufacturing, before being exported
+                    again</p>
+            </div>
+        </div>
+        <div id="bsg-world" class="card-info">
+            <h3>World map</h3>
+            <p>Explore the geographic spread of ‘Build’ nations by clicking, scrolling and dragging.</p>
+        </div>
+
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="js/global.js"></script>
+
+</body>
+
+</html>

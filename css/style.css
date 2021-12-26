@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&family=Rubik&display=swap');
+
+* {
+    font-family: 'Noto Sans', sans-serif;
+}
+
+h3 {
+    margin-top: 0;
+    font-size: 16px;
+}
+
+p {
+    font-weight: 300;
+    line-height: 26px;
+    margin: 0;
+}
+
+.feature-placement {
+    display: flex;
+    position: absolute;
+    right: 0;
+    margin: 36px 230px;
+}
+
+.mapboxgl-ctrl-group button {
+    background-color: #fff;
+    border-radius: 4px;
+  
+}
+
+.mapboxgl-ctrl-compass {
+    display: none !important;
+}
+
+.mapboxgl-ctrl-zoom-in {
+    display: flex;
+    position: absolute;
+    right: 0;
+    margin: 26px 115px;
+    background-color: #fff;
+    
+    box-shadow: 0px 16px 48px 0px #02186E26;
+}
+
+.mapboxgl-ctrl-zoom-out {
+    display: flex;
+    position: absolute;
+    right: 0;
+    margin: 26px 150px;
+    border: none;
+    
+    box-shadow: 0px 16px 48px 0px #02186E26;
+}
+
+
+.feature {
+    background: #fff;
+    display: flex;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0px 16px 48px 0px #02186E26;
+}
+
+#filter-bsg {
+    display: flex;
+    border-radius: 8px;
+    
+}
+
+#filter-bsg input {
+    background-color: #fff;
+    border: none;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-transform: capitalize;
+
+    height: 40px;
+    width: 72px;
+}
+
+#filter-bsg input:hover {
+    cursor: pointer;
+    background-color:#763D8E;
+    color: white;
+}
+
+.btn-z {
+    margin: 0 25px;
+}
+
+.btn-z button {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    border: none;
+    background-color: #fff;
+    font-size: 26px;
+    line-height: 15px;
+    box-shadow: 0px 16px 48px 0px #02186E26;
+}
+
+.card-placement {
+    position: absolute;
+    left: 0;
+    margin-top: 32px;
+    margin-left: 126px;
+    border-radius: 8px;
+    box-shadow: 0px 16px 48px 0px #02186E26;
+    width: 305px;
+    
+}
+
+.dark {
+    background: #F8F7F7 !important;
+    border-radius: 8px 8px 0px 0px !important;
+}
+
+.card-info {
+    background:#fff;
+    padding: 32px;
+    border-radius: 0px 0px 8px 8px ;
+}
+
+.card-info h2, .card-info p {
+    font-size: 16px;
+    font-family: 'Rubik', sans-serif;
+}
+
+.card-info i {
+    float: right;
+    line-height: 24px;
+}
+
+.card-info i:hover {
+    cursor: pointer;
+}
+
+.mapboxgl-popup-content {
+    width: 100%;
+}
+
+.detail-info {
+    display: none;
+}
