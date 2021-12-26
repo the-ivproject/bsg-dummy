@@ -163,7 +163,9 @@ map.on('load', () => {
                             let id_info = document.getElementById(`${b.value.toLowerCase()}-info`)
                             id_info.style.display = 'block'
 
+                            map.setProjection('mercator')
                             let bbox = turf.extent(filterCollection);
+
                             map.fitBounds(bbox, {
                                 padding: 150
                             });
