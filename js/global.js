@@ -45,52 +45,7 @@ let raw_geojson = $.ajax({
     let buttonClicked = null;
     let loading_text = document.getElementById('loading-text')
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            coordinates = [position.coords.latitude, position.coords.longitude];
-
-            let url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates.reverse().join(",")}.json?access_token=pk.eyJ1IjoiaXZwcm9qZWN0IiwiYSI6ImNrcDZuMjZvajAzZDAyd3BibDJvNmJ4bjMifQ.5FpaSBhuOWEDm3m8PQp3Zg`
-            $.get(url, (data) => {
-
-                loading_text.style.display = 'none'
-                let countryOnly = data.features.filter(f => {
-                    return f.place_type == 'country'
-                })
-
-                let countryId = countryOnly[0].properties.short_code
-                let filterRawGeojson = result.features.filter(f => {
-                    return f.properties['CNTR_ID'] == countryId.toUpperCase()
-                })
-
-                filterCollection['features'] = filterRawGeojson
-                map.getSource('bsg-country').setData(filterCollection)
-
-                let currentProp = filterRawGeojson[0].properties['BSG']
-
-                btn.forEach(async b => {
-                    if (buttonClicked !== null) {
-
-                        buttonClicked.style.color = "white";
-                        buttonClicked.style.background = "#763d8e";
-                    }
-
-                    if (b.value.toLowerCase() === currentProp.toLowerCase()) {
-                        buttonClicked = b;
-                        buttonClicked.style.color = "black";
-                        buttonClicked.style.background = "#fff";
-                        let id_info = document.getElementById(`${b.value.toLowerCase()}-info`)
-                        id_info.style.display = 'block'
-
-                        let bbox = turf.extent(filterCollection);
-                        map.fitBounds(bbox, {
-                            padding: 150
-                        });
-                    }
-                })
-            })
-        });
-    }
-
+    
     let hoveredStateId = null;
 
     btn.forEach(async (b, i) => {
@@ -171,7 +126,52 @@ let raw_geojson = $.ajax({
 
 
     map.on('load', () => {
-
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                coordinates = [position.coords.latitude, position.coords.longitude];
+    
+                let url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates.reverse().join(",")}.json?access_token=pk.eyJ1IjoiaXZwcm9qZWN0IiwiYSI6ImNrcDZuMjZvajAzZDAyd3BibDJvNmJ4bjMifQ.5FpaSBhuOWEDm3m8PQp3Zg`
+                $.get(url, (data) => {
+    
+                    loading_text.style.display = 'none'
+                    let countryOnly = data.features.filter(f => {
+                        return f.place_type == 'country'
+                    })
+    
+                    let countryId = countryOnly[0].properties.short_code
+                    let filterRawGeojson = result.features.filter(f => {
+                        return f.properties['CNTR_ID'] == countryId.toUpperCase()
+                    })
+    
+                    filterCollection['features'] = filterRawGeojson
+                    map.getSource('bsg-country').setData(filterCollection)
+    
+                    let currentProp = filterRawGeojson[0].properties['BSG']
+    
+                    btn.forEach(async b => {
+                        if (buttonClicked !== null) {
+    
+                            buttonClicked.style.color = "white";
+                            buttonClicked.style.background = "#763d8e";
+                        }
+    
+                        if (b.value.toLowerCase() === currentProp.toLowerCase()) {
+                            buttonClicked = b;
+                            buttonClicked.style.color = "black";
+                            buttonClicked.style.background = "#fff";
+                            let id_info = document.getElementById(`${b.value.toLowerCase()}-info`)
+                            id_info.style.display = 'block'
+    
+                            let bbox = turf.extent(filterCollection);
+                            map.fitBounds(bbox, {
+                                padding: 150
+                            });
+                        }
+                    })
+                })
+            });
+        }
+    
         map.addLayer({
             'id': 'bsg-country',
             'type': 'fill',
