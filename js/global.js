@@ -11,7 +11,7 @@ map.addControl(new mapboxgl.NavigationControl());
 
 const geojson_url = 'geojson/country_data.geojson'
 
-
+map.on('load', () => {
 let raw_geojson = $.ajax({
     type: "GET",
     url: geojson_url,
@@ -125,7 +125,7 @@ let raw_geojson = $.ajax({
     }
 
 
-    map.on('load', () => {
+
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 coordinates = [position.coords.latitude, position.coords.longitude];
@@ -278,9 +278,9 @@ let raw_geojson = $.ajax({
 
 
         });
-    })
+   
 })
-
+})
 function collapse() {
     let collapsible = document.querySelectorAll('.des')
     let bsg_world = document.getElementById('bsg-world')
@@ -298,3 +298,4 @@ function collapse() {
     })
 
 }
+
