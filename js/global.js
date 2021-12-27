@@ -1,11 +1,17 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoiaXZwcm9qZWN0IiwiYSI6ImNrcDZuMjZvajAzZDAyd3BibDJvNmJ4bjMifQ.5FpaSBhuOWEDm3m8PQp3Zg';
 
+let maxBound = [
+    [-180, -87.71179927260242],
+    [180, 89.45016124669523]
+]
+
 const map = new mapboxgl.Map({
     container: 'map', // container ID
-    projection: 'winkelTripel',
+    projection: 'mercator',
     style: 'mapbox://styles/ivproject/ckxneoss2ol4114jmeav4mapm', // style URL
-    zoom: 2,
-    minZoom: 1.5 // starting zoom
+    center: [0, 0],
+    zoom: 1,
+    maxBounds: maxBound
 });
 
 map.addControl(new mapboxgl.NavigationControl());
@@ -74,9 +80,7 @@ map.on('load', () => {
                 map.getSource('bsg-country').setData(filterCollection)
 
                 let bbox = turf.extent(filterCollection);
-                map.fitBounds(bbox, {
-                    padding: 50
-                });
+                map.fitBounds(maxBound)
 
                 buttonClicked = b;
                 buttonClicked.style.color = "white";
@@ -126,53 +130,73 @@ map.on('load', () => {
         }
 
 
+        loading_text.style.display = 'none'
+        let filterRawGeojson = result.features.filter(f => {
+            return f.properties['CNTR_ID'] == 'NG'
+        })
 
+
+        filterCollection['features'] = filterRawGeojson
+        map.getSource('bsg-country').setData(filterCollection)
+
+        let currentProp = 'BUILD'
+        let id_info = document.getElementById(`${currentProp.toLowerCase()}-info`)
+        id_info.style.display = 'block'
+        
+        map.setZoom(4)
+        map.setCenter(turf.center(filterCollection).geometry.coordinates.map(a => { return a + 0.02}))
+        
+        //  new mapboxgl.Popup()
+        //         .setLngLat(e.lngLat)
+        //         .setHTML(e.features[0].properties['NAME_ENGL'])
+        //         .addTo(map);
         // if (navigator.geolocation) {
-            // navigator.geolocation.getCurrentPosition(function (position) {
-            //     coordinates = [position.coords.latitude, position.coords.longitude];
+        // navigator.geolocation.getCurrentPosition(function (position) {
+        //     coordinates = [position.coords.latitude, position.coords.longitude];
 
-                let url = `https://api.mapbox.com/geocoding/v5/mapbox.places/nigeria.json?access_token=pk.eyJ1IjoiaXZwcm9qZWN0IiwiYSI6ImNrcDZuMjZvajAzZDAyd3BibDJvNmJ4bjMifQ.5FpaSBhuOWEDm3m8PQp3Zg`
-                $.get(url, (data) => {
+        // let url = `https://api.mapbox.com/geocoding/v5/mapbox.places/nigeria.json?access_token=pk.eyJ1IjoiaXZwcm9qZWN0IiwiYSI6ImNrcDZuMjZvajAzZDAyd3BibDJvNmJ4bjMifQ.5FpaSBhuOWEDm3m8PQp3Zg`
+        // $.get(url, (data) => {
 
-                    loading_text.style.display = 'none'
-                    let countryOnly = data.features.filter(f => {
-                        return f.place_type == 'country'
-                    })
+        //     loading_text.style.display = 'none'
+        //     let countryOnly = data.features.filter(f => {
+        //         return f.place_type == 'country'
+        //     })
 
-                    let countryId = countryOnly[0].properties.short_code
-                    let filterRawGeojson = result.features.filter(f => {
-                        return f.properties['CNTR_ID'] == countryId.toUpperCase()
-                    })
+        //     let countryId = countryOnly[0].properties.short_code
+        //     let filterRawGeojson = result.features.filter(f => {
+        //         return f.properties['CNTR_ID'] == countryId.toUpperCase()
+        //     })
 
-                    filterCollection['features'] = filterRawGeojson
-                    map.getSource('bsg-country').setData(filterCollection)
+        //     filterCollection['features'] = filterRawGeojson
+        //     map.getSource('bsg-country').setData(filterCollection)
 
-                    let currentProp = filterRawGeojson[0].properties['BSG']
+        //     let currentProp = filterRawGeojson[0].properties['BSG']
 
-                    btn.forEach(async b => {
-                        if (buttonClicked !== null) {
+        //     btn.forEach(async b => {
+        //         if (buttonClicked !== null) {
 
-                            buttonClicked.style.color = "white";
-                            buttonClicked.style.background = "#763d8e";
-                        }
+        //             buttonClicked.style.color = "white";
+        //             buttonClicked.style.background = "#763d8e";
+        //         }
 
-                        if (b.value.toLowerCase() === currentProp.toLowerCase()) {
-                            buttonClicked = b;
-                            buttonClicked.style.color = "black";
-                            buttonClicked.style.background = "#fff";
-                            let id_info = document.getElementById(`${b.value.toLowerCase()}-info`)
-                            id_info.style.display = 'block'
+        //         if (b.value.toLowerCase() === currentProp.toLowerCase()) {
+        //             buttonClicked = b;
+        //             buttonClicked.style.color = "black";
+        //             buttonClicked.style.background = "#fff";
 
-                            map.setProjection('mercator')
-                            let bbox = turf.extent(filterCollection);
+        //             let id_info = document.getElementById(`${b.value.toLowerCase()}-info`)
+        //             id_info.style.display = 'block'
 
-                            map.fitBounds(bbox, {
-                                padding: 150
-                            });
-                        }
-                    })
-                })
-            // });
+        //             map.setProjection('mercator')
+        //             let bbox = turf.extent(filterCollection);
+
+        //             map.fitBounds(bbox, {
+        //                 padding: 150
+        //             });
+        //         }
+        //     })
+        // })
+        // });
         // }
 
         map.addLayer({
@@ -288,9 +312,19 @@ map.on('load', () => {
         if (currentZoom > lastZoom) {
             // zoom in
             map.setProjection('mercator')
+            map.setProjection({
+                name: 'winkelTripel',
+                center: [0, 30],
+                parallels: [30, 30]
+            });
         } else {
             // zoom out
             map.setProjection('winkelTripel')
+            map.setProjection({
+                name: 'winkelTripel',
+                center: [0, 30],
+                parallels: [30, 30]
+            });
             // map.dragging.disable();
         }
 
