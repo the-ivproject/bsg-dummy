@@ -1,17 +1,17 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoiaXZwcm9qZWN0IiwiYSI6ImNrcDZuMjZvajAzZDAyd3BibDJvNmJ4bjMifQ.5FpaSBhuOWEDm3m8PQp3Zg';
 
 let maxBound = [
-    [-180, -87.71179927260242],
+    [-129.75334476779582, -56.94400688645721],
     [180, 89.45016124669523]
 ]
 
 const map = new mapboxgl.Map({
     container: 'map', // container ID
-    projection: 'mercator',
+    // projection: {name: "winkelTripel"},
     style: 'mapbox://styles/ivproject/ckxneoss2ol4114jmeav4mapm', // style URL
-    center: [0, 0],
-    zoom: 1,
-    maxBounds: maxBound
+    minZoom: 1.6,
+    maxBounds: maxBound,
+    cooperativeGestures:true
 });
 
 map.addControl(new mapboxgl.NavigationControl());
@@ -27,7 +27,7 @@ map.on('load', () => {
             console.log('ok')
         }
     }).done(result => {
-
+        console.log(map.getBounds(result))
         let filterCollection = {
             type: "FeatureCollection",
         }
@@ -45,15 +45,15 @@ map.on('load', () => {
         let btn = document.querySelectorAll('#filter-bsg input')
 
         let detail_info = document.querySelectorAll('.detail-info')
-        detail_info.forEach(i => {
-            i.style.display = 'none'
-        })
 
         let buttonClicked = null;
         let loading_text = document.getElementById('loading-text')
-
+        let default_info = document.getElementById('default-info-bottom')
+        let default_analytic = document.getElementById('default-analytic')
 
         let hoveredStateId = null;
+        let info_bottom = document.querySelectorAll('#text-info .text-info-detail')
+        let analytic_bottom = document.querySelectorAll('#chart-info .card-analytic')
 
         btn.forEach(async (b, i) => {
             b.style.color = "black";
@@ -73,14 +73,25 @@ map.on('load', () => {
                     i.style.display = 'none'
                 })
 
+                info_bottom.forEach(i => {
+                    i.style.display = 'none'
+                })
+
+                analytic_bottom.forEach(i => {
+                    i.style.display = 'none'
+                })
+
                 let id_info = document.getElementById(`${b.value}-info`)
                 id_info.style.display = 'block'
 
+                let analytic_info = document.getElementById(`${b.value.toLowerCase()}-analytic`)
+                analytic_info.style.display = 'block'
+
+                let text_info = document.getElementById(`${b.value.toLowerCase()}-info-bottom`)
+                text_info.style.display = 'block'
+
                 filterCollection['features'] = data
                 map.getSource('bsg-country').setData(filterCollection)
-
-                let bbox = turf.extent(filterCollection);
-                map.fitBounds(maxBound)
 
                 buttonClicked = b;
                 buttonClicked.style.color = "white";
@@ -129,23 +140,41 @@ map.on('load', () => {
             });
         }
 
+        // loading_text.style.display = 'none'
+        // let filterRawGeojson = result.features.filter(f => {
+        //     return f.properties['CNTR_ID'] == 'NG'
+        // })
 
-        loading_text.style.display = 'none'
-        let filterRawGeojson = result.features.filter(f => {
-            return f.properties['CNTR_ID'] == 'NG'
-        })
+        // filterCollection['features'] = filterRawGeojson
+        // map.getSource('bsg-country').setData(filterCollection)
 
+        // let currentProp = 'BUILD'
+        // let id_info = document.getElementById(`${currentProp.toLowerCase()}-info`)
+        // id_info.style.display = 'block'
 
-        filterCollection['features'] = filterRawGeojson
-        map.getSource('bsg-country').setData(filterCollection)
+        // btn.forEach(async b => {
+        //     if (buttonClicked !== null) {
 
-        let currentProp = 'BUILD'
-        let id_info = document.getElementById(`${currentProp.toLowerCase()}-info`)
-        id_info.style.display = 'block'
-        
-        map.setZoom(4)
-        map.setCenter(turf.center(filterCollection).geometry.coordinates.map(a => { return a + 0.02}))
-        
+        //         buttonClicked.style.color = "white";
+        //         buttonClicked.style.background = "#763d8e";
+        //     }
+
+        //     if (currentProp.toLowerCase() === b.value.toLowerCase()) {
+        //         buttonClicked = b;
+        //         buttonClicked.style.color = "black";
+        //         buttonClicked.style.background = "#fff";
+
+        //         // map.setProjection('mercator')
+
+        //     }
+        // })
+
+        // map.setZoom(4)
+        // map.setCenter(turf.center(filterCollection).geometry.coordinates.map(a => { return a + 0.02}))
+
+        //             buttonClicked = b;
+        //             buttonClicked.style.color = "black";
+        //             buttonClicked.style.background = "#fff";
         //  new mapboxgl.Popup()
         //         .setLngLat(e.lngLat)
         //         .setHTML(e.features[0].properties['NAME_ENGL'])
@@ -154,50 +183,56 @@ map.on('load', () => {
         // navigator.geolocation.getCurrentPosition(function (position) {
         //     coordinates = [position.coords.latitude, position.coords.longitude];
 
-        // let url = `https://api.mapbox.com/geocoding/v5/mapbox.places/nigeria.json?access_token=pk.eyJ1IjoiaXZwcm9qZWN0IiwiYSI6ImNrcDZuMjZvajAzZDAyd3BibDJvNmJ4bjMifQ.5FpaSBhuOWEDm3m8PQp3Zg`
-        // $.get(url, (data) => {
+        let url = `https://api.mapbox.com/geocoding/v5/mapbox.places/nigeria.json?access_token=pk.eyJ1IjoiaXZwcm9qZWN0IiwiYSI6ImNrcDZuMjZvajAzZDAyd3BibDJvNmJ4bjMifQ.5FpaSBhuOWEDm3m8PQp3Zg`
 
-        //     loading_text.style.display = 'none'
-        //     let countryOnly = data.features.filter(f => {
-        //         return f.place_type == 'country'
-        //     })
+        $.get(url, (data) => {
 
-        //     let countryId = countryOnly[0].properties.short_code
-        //     let filterRawGeojson = result.features.filter(f => {
-        //         return f.properties['CNTR_ID'] == countryId.toUpperCase()
-        //     })
+            loading_text.style.display = 'none'
+            default_info.style.display = 'none'
+            default_analytic.style.display = 'none'
 
-        //     filterCollection['features'] = filterRawGeojson
-        //     map.getSource('bsg-country').setData(filterCollection)
+            let countryOnly = data.features.filter(f => {
+                return f.place_type == 'country'
+            })
 
-        //     let currentProp = filterRawGeojson[0].properties['BSG']
+            let countryId = countryOnly[0].properties.short_code
+            let filterRawGeojson = result.features.filter(f => {
+                return f.properties['CNTR_ID'] == countryId.toUpperCase()
+            })
 
-        //     btn.forEach(async b => {
-        //         if (buttonClicked !== null) {
+            filterCollection['features'] = filterRawGeojson
+            map.getSource('bsg-country').setData(filterCollection)
 
-        //             buttonClicked.style.color = "white";
-        //             buttonClicked.style.background = "#763d8e";
-        //         }
+            let currentProp = filterRawGeojson[0].properties['BSG']
 
-        //         if (b.value.toLowerCase() === currentProp.toLowerCase()) {
-        //             buttonClicked = b;
-        //             buttonClicked.style.color = "black";
-        //             buttonClicked.style.background = "#fff";
+            btn.forEach(async b => {
+                if (buttonClicked !== null) {
 
-        //             let id_info = document.getElementById(`${b.value.toLowerCase()}-info`)
-        //             id_info.style.display = 'block'
+                    buttonClicked.style.color = "white";
+                    buttonClicked.style.background = "#763d8e";
+                }
 
-        //             map.setProjection('mercator')
-        //             let bbox = turf.extent(filterCollection);
+                if (b.value.toLowerCase() === currentProp.toLowerCase()) {
+                    buttonClicked = b;
+                    buttonClicked.style.color = "white";
+                    buttonClicked.style.background = "#763d8e";
 
-        //             map.fitBounds(bbox, {
-        //                 padding: 150
-        //             });
-        //         }
-        //     })
-        // })
-        // });
-        // }
+                    let id_info = document.getElementById(`${b.value.toLowerCase()}-info`)
+                    id_info.style.display = 'block'
+
+                    let analytic_info = document.getElementById(`${b.value.toLowerCase()}-analytic`)
+                    analytic_info.style.display = 'block'
+
+                    let text_info = document.getElementById(`${b.value.toLowerCase()}-info-bottom`)
+                    text_info.style.display = 'block'
+
+                    map.setZoom(4)
+                    map.setCenter(turf.center(filterCollection).geometry.coordinates.map(a => {
+                        return a + 0.02
+                    }))
+                }
+            })
+        })
 
         map.addLayer({
             'id': 'bsg-country',
@@ -263,7 +298,26 @@ map.on('load', () => {
 
             if (currentProp === 'No BSG') {
                 loading_text.style.display = 'block'
+
+                default_info.style.display = 'block'
+                default_analytic.style.display = 'block'
+
                 detail_info.forEach(i => {
+                    i.style.display = 'none'
+                })
+
+                let input = document.querySelectorAll('#filter-bsg input')
+
+                input.forEach(i => {
+                    i.style.background = 'white'
+                    i.style.color = 'black'
+                })
+
+                info_bottom.forEach(i => {
+                    i.style.display = 'none'
+                })
+
+                analytic_bottom.forEach(i => {
                     i.style.display = 'none'
                 })
 
@@ -275,12 +329,30 @@ map.on('load', () => {
                     i.style.display = 'none'
                 })
 
+                info_bottom.forEach(i => {
+                    i.style.display = 'none'
+                })
+
+                analytic_bottom.forEach(i => {
+                    i.style.display = 'none'
+                })
+
+
+                default_info.style.display = 'none'
+                default_analytic.style.display = 'none'
+
                 buttonClicked = selectedInput[0];
                 buttonClicked.style.color = "black";
                 buttonClicked.style.background = "#fff";
 
                 let id_info = document.getElementById(`${currentProp.toLowerCase()}-info`)
                 id_info.style.display = 'block'
+
+                let analytic_info = document.getElementById(`${currentProp.toLowerCase()}-analytic`)
+                analytic_info.style.display = 'block'
+
+                let text_info = document.getElementById(`${currentProp.toLowerCase()}-info-bottom`)
+                text_info.style.display = 'block'
 
                 btn.forEach(async b => {
                     b.style.color = "black";
@@ -291,7 +363,6 @@ map.on('load', () => {
                         buttonClicked.style.background = "#763d8e";
                     }
                 })
-
             }
 
             filterCollection['features'] = e.features
@@ -307,29 +378,29 @@ map.on('load', () => {
 
     let lastZoom = map.getZoom();
 
-    map.on('zoom', () => {
-        const currentZoom = map.getZoom();
-        if (currentZoom > lastZoom) {
-            // zoom in
-            map.setProjection('mercator')
-            map.setProjection({
-                name: 'winkelTripel',
-                center: [0, 30],
-                parallels: [30, 30]
-            });
-        } else {
-            // zoom out
-            map.setProjection('winkelTripel')
-            map.setProjection({
-                name: 'winkelTripel',
-                center: [0, 30],
-                parallels: [30, 30]
-            });
-            // map.dragging.disable();
-        }
+    // map.on('zoom', () => {
+    //     const currentZoom = map.getZoom();
+    //     if (currentZoom > lastZoom) {
+    //         // zoom in
+    //         // map.setProjection('mercator')
+    //         map.setProjection({
+    //             name: 'mercator',
+    //             center: [0, 0],
+    //             parallels: [30, 30]
+    //         });
+    //     } else {
+    //         // zoom out
+    //         // map.setProjection('winkelTripel')
+    //         map.setProjection({
+    //             name: 'winkelTripel',
 
-        lastZoom = currentZoom;
-    });
+    //         });
+
+    //         // map.dragging.disable();
+    //     }
+
+    //     lastZoom = currentZoom;
+    // });
 })
 
 function collapse() {
