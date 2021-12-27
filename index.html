@@ -12,7 +12,8 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
 
     <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <style>
         body {
             margin: 0;
@@ -20,73 +21,419 @@
         }
 
         #map {
-            position: absolute;
-            top: 0;
-            bottom: 0;
+
             width: 100%;
+            height: 100vh;
         }
     </style>
 </head>
 
 <body>
 
-    <div id="map"></div>
-
-    <div class="feature-placement">
-        <div class="feature">
-            <div id="filter-bsg">
-                <input type="button" value="shift" style="display: block;">
-                <input type="button" value="grow" style="display: block;">
-                <input type="button" value="build" style="display: block;">
+    <div id="map">
+        <div class="feature-placement">
+            <div class="feature">
+                <div id="filter-bsg">
+                    <input type="button" value="shift" style="display: block;">
+                    <input type="button" value="grow" style="display: block;">
+                    <input type="button" value="build" style="display: block;">
+                </div>
             </div>
         </div>
-        <!-- <div class="btn-z">
-            <button type="button" class="mapboxgl-ctrl-zoom-in" aria-label="Zoom in" aria-disabled="false"> - </button>
-            <button onclick> + </button>
-        </div> -->
+
+        <div class="card-placement">
+            <div class="card-info dark">
+                <h2 id="loading-text" style="margin: 0;">No Data</h2>
+                <div id="build-info" class="detail-info">
+                    <h3 class="bsg-title">What is a ‘Build’ nation? <i class="fas fa-chevron-up"
+                            onclick="collapse()"></i></h3>
+                    <p class="des">‘Build’ nations are characterised by an overall modest per capita material footprint
+                        when compared
+                        with the ‘Grow’ and ‘Shift’ nations. Biomass extraction is the dominant resource group. Due to a
+                        largely informal waste sector, material cycling is low but assumed to be underreported.</p>
+                </div>
+                <div id="shift-info" class="detail-info">
+                    <h3 class="bsg-title">What is a ‘Shift’ nation? <i class="fas fa-chevron-up"
+                            onclick="collapse()"></i></h3>
+                    <p class="des">The ‘Shift’ nations show high imports of
+                        finished products with a high resource
+                        footprint elsewhere. Shift nations effectively
+                        outsource resource intensive production.
+                        Their extraction of fossil fuels is relatively
+                        high.</p>
+                </div>
+                <div id="grow-info" class="detail-info">
+                    <h3 class="bsg-title">What is a ‘Grow’ nation? <i class="fas fa-chevron-up"
+                            onclick="collapse()"></i></h3>
+                    <p class="des"> ‘Grow’ countries are manufacturing hubs,
+                        hosting an expanding industrial sector and
+                        leading the way when it comes to building.
+                        They extract and import a large array of
+                        resources which are then processed and flow
+                        into manufacturing, before being exported
+                        again</p>
+                </div>
+            </div>
+            <div id="bsg-world" class="card-info">
+                <h3>World map</h3>
+                <p>Explore the geographic spread of ‘Build’ nations by clicking, scrolling and dragging.</p>
+            </div>
+        </div>
     </div>
 
-    <div class="card-placement">
-        <div class="card-info dark">
-
-            <h2 id="loading-text" style="margin: 0;">No Data</h2>
-
-            <div id="build-info" class="detail-info">
-                <h3 class="bsg-title">What is a ‘Build’ nation? <i class="fas fa-chevron-up" onclick="collapse()"></i></h3>
-                <p class="des">‘Build’ nations are characterised by an overall modest per capita material footprint when compared
-                    with the ‘Grow’ and ‘Shift’ nations. Biomass extraction is the dominant resource group. Due to a
-                    largely informal waste sector, material cycling is low but assumed to be underreported.</p>
+    <div class="area-detail">
+        <div class="row">
+            <div class="col-sm-6">
+                <div id="text-info" class="pd-in">
+                    <div id="default-info-bottom" >
+                        <h2>No Data</h2>
+                        <p>No data provided.</p>
+                    </div>
+                    <div id="build-info-bottom" class="text-info-detail" style="display: none;">
+                        <h2>Large population with a lot of opportunities</h2>
+                        <br>
+                        <p>A low rate of material consumption per capita
+                            means Build countries currently transgress few
+                            planetary boundaries, if any at all. They are
+                            responsible for the production of just 17% of
+                            global emissions and 19% of
+                            global resources in absolute terms, despite making
+                            up 48% of the global population. But these
+                            countries are struggling to meet their basic needs,
+                            including Human Development Index (HDI)
+                            indicators such as education
+                            and healthcare. They have biomass-oriented
+                            economies and are resource-rich, yet are net
+                            importers of fossil fuels, metal ores and non-metallic minerals in the form of finished and
+                            semi-finished products. As they continue to build their
+                            more basic infrastructure, Build countries have a
+                            unique position in moving toward closing both the
+                            Circularity and Emissions Gaps.
+                            <br><br>
+                            As Build countries blaze ahead on improving the
+                            quality of life for their populations, four pathways
+                            in particular can aid the transition to a circular
+                            future that can also support limiting warming to
+                            well below 2-degrees. These relate to reforming
+                            agricultural practices away from monocropping
+                            and deforestation, applying circular thinking
+                            across their necessary construction, ensuring
+                            infrastructure for distributed and accessible
+                            mobility solutions in growing cities and
+                            combining informal
+                            and formal waste management infrastructure.</p>
+                    </div>
+                    <div id="shift-info-bottom" class="text-info-detail" style="display: none;">
+                        <h2>High consumption, high responsibility</h2>
+                        <br>
+                        <p>As leading emitters across all resource categories,
+                            Shift countries are at the centre of the transition
+                            towards a circular, low-carbon economy. Despite
+                            hosting a minority of the global population, they
+                            produce the majority of emissions (43%) and
+                            account for one-third (31%) of all global resource
+                            extraction. Their material consumption is 10 times
+                            greater than Build countries. Per capita, Shift
+                            countries are the largest consumers across all
+                            resource groups; their extraction of fossil fuels is
+                            relatively high, as is their participation in global trade. So, despite high HDI scores and
+                            comfortable
+                            lifestyles, these countries have a way to go to limit
+                            their consumption in line with our planet’s
+                            resources.
+                            <br><br>
+                            They are also highly responsible for reducing
+                            global emissions, particularly from an historical
+                            perspective, and are under pressure to do so—fast.
+                            In the high-impact areas of Nutrition, Mobility and
+                            Housing, Shift countries need to, first and
+                            foremost, take responsibility and reduce their
+                            consumption by integrating circular strategies
+                            across the board: from ownership to sharing
+                            models; to making the most of their goods—from
+                            buildings to vehicles— before, during and after
+                            their functional lifetimes and optimising how
+                            waste is valorised in the already mature waste
+                            management systems. To get there, they must
+                            mobilise all the technologies and funds that they
+                            have at their disposal.</p>
+                    </div>
+                    <div id="grow-info-bottom" class="text-info-detail" style="display: none;">
+                        <h2>Creating products for export</h2>
+                        <br>
+                        <p>Grow countries are manufacturing hubs, hosting
+                            an expanding industrial sector and leading the way
+                            when it comes to building and economic growth.
+                            In facilitating rapid infrastructure expansion to lift
+                            a vast proportion of the population out of poverty
+                            and to accommodate a growing middle-class, they
+                            claim 47% of global emissions and 51% of global
+                            resource extraction from a consumption
+                            perspective, in absolute terms. They have the
+                            highest rate of non-metallic mineral extraction at
+                            68%, are heavy
+                            metal ore users and are net-exporters of all four
+                            resource groups—they are the ‘resource banks’ of
+                            the global economy. The rapid industrialisation of
+                            these countries, and the expansion of the middle
+                            class, has occurred concurrently with improving
+                            living standards.
+                            <br><br>
+                            Four key transition arenas arise: prioritising
+                            sustainable agriculture, especially in products set
+                            for export, mainstreaming resource-efficient and
+                            lowcarbon construction materials, satiating the
+                            growing appetite for energy with renewable
+                            sources where possible and establishing
+                            infrastructure for effective material cycling,
+                            including construction and demolition waste.</p>
+                    </div>
+                </div>
             </div>
-            <div id="shift-info" class="detail-info">
-                <h3 class="bsg-title">What is a ‘Shift’ nation? <i class="fas fa-chevron-up" onclick="collapse()"></i></h3>
-                <p class="des">The ‘Shift’ nations show high imports of
-                    finished products with a high resource
-                    footprint elsewhere. Shift nations effectively
-                    outsource resource intensive production.
-                    Their extraction of fossil fuels is relatively
-                    high.</p>
-            </div>
-            <div id="grow-info" class="detail-info">
-                <h3 class="bsg-title">What is a ‘Grow’ nation? <i class="fas fa-chevron-up" onclick="collapse()"></i></h3>
-                <p class="des"> ‘Grow’ countries are manufacturing hubs,
-                    hosting an expanding industrial sector and
-                    leading the way when it comes to building.
-                    They extract and import a large array of
-                    resources which are then processed and flow
-                    into manufacturing, before being exported
-                    again</p>
+            <div class="col-sm-6">
+                <div class="pd-in">
+                    <div id="chart-info" class="card-info-bottom">
+                        <div id="default-analytic">
+                            <h4>No Data</h4>
+                            <p>No data provided.</p>
+                        </div>
+                        <div id="build-analytic" class="card-analytic" style="display: none;">
+                            <h4>Build data at a glance</h4>
+                            <div class="list-legend">
+                                <p href=""><i class="fas fa-square" style="color: #F38A2A;"></i> Build nations</p>
+                                <p href=""><i class="fas fa-square" style="color: #4A114A"></i> Rest of the world</p>
+                            </div>
+                            <div class="high-card">
+                                <h4>High</h4>
+                                <div class="bar-place">
+                                    <p>Population</p>
+                                    <div class="bar-chart">
+                                        <p>48%</p>
+                                        <div class="row" style="width: 100%;">
+                                            <div class="progress-bar"
+                                                style="width:48%;background-color: #F38A2A;border-radius: 8px 0 0 8px;">
+                                            </div>
+                                            <div class="progress-bar"
+                                                style="width:52%;background-color: #4A114A;border-radius: 0px 8px 8px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="high-card">
+                                <h4>Low</h4>
+                                <div class="bar-place">
+                                    <p>Gross domestic product</p>
+                                    <div class="bar-chart">
+                                        <p>7%</p>
+                                        <div class="row" style="width: 100%;">
+                                            <div class="progress-bar"
+                                                style="width:7%;background-color: #F38A2A;border-radius: 8px 0 0 8px;">
+                                            </div>
+                                            <div class="progress-bar"
+                                                style="width:93%;background-color: #4A114A;border-radius: 0px 8px 8px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-place">
+                                    <p>Material footprint per capita</p>
+                                    <div class="bar-chart">
+                                        <p>49%</p>
+                                        <div class="row" style="width: 100%;">
+                                            <div class="progress-bar"
+                                                style="width:49%;background-color: #F38A2A;border-radius: 8px 0 0 8px;">
+                                            </div>
+                                            <div class="progress-bar"
+                                                style="width:51%;background-color: #4A114A;border-radius: 0px 8px 8px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-place">
+                                    <p>Carbon footprint</p>
+                                    <div class="bar-chart">
+                                        <p>10%</p>
+                                        <div class="row" style="width: 100%;">
+                                            <div class="progress-bar"
+                                                style="width:10%;background-color: #F38A2A;border-radius: 8px 0 0 8px;">
+                                            </div>
+                                            <div class="progress-bar"
+                                                style="width:90%;background-color: #4A114A;border-radius: 0px 8px 8px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col text-center">
+                                <button class="btn card-section-btn">Explore the full dataset</button>
+                            </div>
+                        </div>
+                        <div id="shift-analytic" class="card-analytic" style="display: none;">
+                            <h4>Shift data at a glance</h4>
+                            <div class="list-legend">
+                                <p href=""><i class="fas fa-square" style="color: #F38A2A;"></i> Shift nations</p>
+                                <p href=""><i class="fas fa-square" style="color: #4A114A"></i> Rest of the world</p>
+                            </div>
+                            <div class="high-card">
+                                <h4>High</h4>
+                                <div class="bar-place">
+                                    <p>Gross domestic product</p>
+                                    <div class="bar-chart">
+                                        <p>66%</p>
+                                        <div class="row" style="width: 100%;">
+                                            <div class="progress-bar"
+                                                style="width:66%;background-color: #F38A2A;border-radius: 8px 0 0 8px;">
+                                            </div>
+                                            <div class="progress-bar"
+                                                style="width:34%;background-color: #4A114A;border-radius: 0px 8px 8px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-place">
+                                    <p>Material footprint per capita</p>
+                                    <div class="bar-chart">
+                                        <p>74%</p>
+                                        <div class="row" style="width: 100%;">
+                                            <div class="progress-bar"
+                                                style="width:74%;background-color: #F38A2A;border-radius: 8px 0 0 8px;">
+                                            </div>
+                                            <div class="progress-bar"
+                                                style="width:26%;background-color: #4A114A;border-radius: 0px 8px 8px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-place">
+                                    <p>Carbon footprint</p>
+                                    <div class="bar-chart">
+                                        <p>63%</p>
+                                        <div class="row" style="width: 100%;">
+                                            <div class="progress-bar"
+                                                style="width:63%;background-color: #F38A2A;border-radius: 8px 0 0 8px;">
+                                            </div>
+                                            <div class="progress-bar"
+                                                style="width:37%;background-color: #4A114A;border-radius: 0px 8px 8px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="high-card">
+                                <h4>Low</h4>
+                                <div class="bar-place">
+                                    <p>Population</p>
+                                    <div class="bar-chart">
+                                        <p>16%</p>
+                                        <div class="row" style="width: 100%;">
+                                            <div class="progress-bar"
+                                                style="width:16%;background-color: #F38A2A;border-radius: 8px 0 0 8px;">
+                                            </div>
+                                            <div class="progress-bar"
+                                                style="width:84%;background-color: #4A114A;border-radius: 0px 8px 8px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col text-center">
+                                <button class="btn card-section-btn">Explore the full dataset</button>
+                            </div>
+                        </div>
+                        <div id="grow-analytic" class="card-analytic"  style="display: none;">
+                            <h4>Grow data at a glance</h4>
+                            <div class="list-legend">
+                                <p href=""><i class="fas fa-square" style="color: #F38A2A;"></i> Grow nations</p>
+                                <p href=""><i class="fas fa-square" style="color: #4A114A"></i> Rest of the world</p>
+                            </div>
+                            <div class="high-card">
+                                <h4>High</h4>
+                                <div class="bar-place">
+                                    <p>Material footprint per capita</p>
+                                    <div class="bar-chart">
+                                        <p>54%</p>
+                                        <div class="row" style="width: 100%;">
+                                            <div class="progress-bar"
+                                                style="width:54%;background-color: #F38A2A;border-radius: 8px 0 0 8px;">
+                                            </div>
+                                            <div class="progress-bar"
+                                                style="width:46%;background-color: #4A114A;border-radius: 0px 8px 8px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-place">
+                                    <p>Carbon footprint</p>
+                                    <div class="bar-chart">
+                                        <p>40%</p>
+                                        <div class="row" style="width: 100%;">
+                                            <div class="progress-bar"
+                                                style="width:40%;background-color: #F38A2A;border-radius: 8px 0 0 8px;">
+                                            </div>
+                                            <div class="progress-bar"
+                                                style="width:60%;background-color: #4A114A;border-radius: 0px 8px 8px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="high-card">
+                                <h4>Low</h4>
+                                <div class="bar-place">
+                                    <p>Material footprint per capita</p>
+                                    <div class="bar-chart">
+                                        <p>12%</p>
+                                        <div class="row" style="width: 100%;">
+                                            <div class="progress-bar"
+                                                style="width:12%;background-color: #F38A2A;border-radius: 8px 0 0 8px;">
+                                            </div>
+                                            <div class="progress-bar"
+                                                style="width:88%;background-color: #4A114A;border-radius: 0px 8px 8px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-place">
+                                    <p>Carbon footprint</p>
+                                    <div class="bar-chart">
+                                        <p>15%</p>
+                                        <div class="row" style="width: 100%;">
+                                            <div class="progress-bar"
+                                                style="width:15%;background-color: #F38A2A;border-radius: 8px 0 0 8px;">
+                                            </div>
+                                            <div class="progress-bar"
+                                                style="width:85%;background-color: #4A114A;border-radius: 0px 8px 8px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col text-center">
+                                <button class="btn card-section-btn">Explore the full dataset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div id="bsg-world" class="card-info">
-            <h3>World map</h3>
-            <p>Explore the geographic spread of ‘Build’ nations by clicking, scrolling and dragging.</p>
-        </div>
-
+    </div>
     </div>
 
-
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.js"
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
     <script src="js/global.js"></script>
 
 </body>
