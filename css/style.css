@@ -9,13 +9,14 @@ body {
 }
 
 h3 {
-    margin-top: 0;
-    font-size: 16px;
+    margin-top: 0 !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
 }
 
 p {
-    font-weight: 300;
-    line-height: 26px;
+    font-weight: 300 !important;
+    line-height: 26px !important;
     margin: 0;
 }
 
@@ -24,12 +25,13 @@ p {
     position: absolute;
     right: 0;
     margin: 36px 230px;
+    z-index: 9999;
 }
 
 .mapboxgl-ctrl-group button {
     background-color: #fff;
     border-radius: 4px;
-  
+
 }
 
 .mapboxgl-ctrl-compass {
@@ -42,7 +44,7 @@ p {
     right: 0;
     margin: 27px 115px;
     background-color: #fff;
-    
+
     box-shadow: 0px 16px 48px 0px #02186E26;
 }
 
@@ -52,10 +54,9 @@ p {
     right: 0;
     margin: 27px 150px;
     border: none;
-    
+
     box-shadow: 0px 16px 48px 0px #02186E26;
 }
-
 
 .feature {
     background: #fff;
@@ -68,7 +69,7 @@ p {
 #filter-bsg {
     display: flex;
     border-radius: 8px;
-    
+    z-index: 999;
 }
 
 #filter-bsg input {
@@ -84,8 +85,12 @@ p {
 
 #filter-bsg input:hover {
     cursor: pointer;
-    background-color:#763D8E;
+    background-color: #763D8E;
     color: white;
+}
+
+.bsg-title {
+    margin-bottom: 16px;
 }
 
 .btn-z {
@@ -111,7 +116,7 @@ p {
     border-radius: 8px;
     box-shadow: 0px 16px 48px 0px #02186E26;
     width: 305px;
-    
+    z-index: 999;
 }
 
 .dark {
@@ -120,12 +125,24 @@ p {
 }
 
 .card-info {
-    background:#fff;
+    background: #fff;
     padding: 32px;
-    border-radius: 0px 0px 8px 8px ;
+    border-radius: 0px 0px 8px 8px;
 }
 
-.card-info h2, .card-info p {
+.card-info-bottom {
+    box-shadow: 0px 16px 48px 0px #02186E26;
+    border-radius: 8px;
+    margin-left: 66px;
+    padding: 30px;
+}
+
+.pd-in {
+    padding: 25px;
+}
+
+.card-info h2,
+.card-info p {
     font-size: 16px;
     font-family: 'Rubik', sans-serif;
 }
@@ -145,4 +162,58 @@ p {
 
 .detail-info {
     display: none;
+}
+
+.area-detail p,
+.area-detail h2,
+.area-detail h3,
+.area-detail h4 {
+    font-family: 'Rubik';
+}
+
+.area-detail {
+    margin: 150px 100px;
+}
+
+.list-legend {
+    display: flex;
+}
+
+.list-legend p {
+    margin-right: 30px;
+    font-size: 14px;
+}
+
+#grow-analytic h4 {
+    margin-bottom: 16px !important;
+}
+
+.high-card {
+    margin-top: 30px;
+}
+
+.high-card h4 {
+    margin-bottom: 16px;
+    font-weight: bold;
+}
+
+.bar-chart {
+    display: flex;
+}
+
+.bar-chart .row {
+    margin: 0 20px;
+}
+
+.progress-bar {
+    height: 20px;
+}
+
+.card-section-btn {
+    margin: 30px 0;
+    background-color: #763D8E;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    box-shadow: 0px 4px 24px -10px rgba(2, 24, 110, 0.2);
 }
